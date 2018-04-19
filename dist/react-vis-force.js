@@ -645,7 +645,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function componentWillReceiveProps(nextProps) {
 	         this.lastUpdated = new Date();
 	         this.updateSimulation(nextProps);
-	         this.simulation.alpha(1).restart();
+	         if (nextProps.dataKey !== this.props.dataKey) {
+	            this.simulation.alpha(1).restart();
+	         }
 	      }
 	   }, {
 	      key: 'componentWillUnmount',
@@ -1819,7 +1821,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	   value: true
 	});
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1873,222 +1875,224 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isTouch = _global.window && 'ontouchstart' in _global.window;
 	
 	var selectedNodeShape = _propTypes2.default.shape({
-	  id: _propTypes2.default.string
+	   id: _propTypes2.default.string
 	});
 	
 	var InteractiveForceGraph = function (_PureComponent) {
-	  _inherits(InteractiveForceGraph, _PureComponent);
+	   _inherits(InteractiveForceGraph, _PureComponent);
 	
-	  _createClass(InteractiveForceGraph, null, [{
-	    key: 'propTypes',
-	    get: function get() {
-	      return Object.assign({
-	        selectedNode: selectedNodeShape,
-	        defaultSelectedNode: selectedNodeShape,
-	        highlightDependencies: _propTypes2.default.bool,
-	        opacityFactor: _propTypes2.default.number,
-	        onSelectNode: _propTypes2.default.func,
-	        onDeselectNode: _propTypes2.default.func
-	      }, _ForceGraph2.default.propTypes);
-	    }
-	  }, {
-	    key: 'defaultProps',
-	    get: function get() {
-	      return {
-	        className: '',
-	        defaultSelectedNode: null,
-	        opacityFactor: 4,
-	        onSelectNode: function onSelectNode() {},
-	        onDeselectNode: function onDeselectNode() {}
-	      };
-	    }
-	  }]);
-	
-	  function InteractiveForceGraph(props) {
-	    _classCallCheck(this, InteractiveForceGraph);
-	
-	    var _this = _possibleConstructorReturn(this, (InteractiveForceGraph.__proto__ || Object.getPrototypeOf(InteractiveForceGraph)).call(this, props));
-	
-	    _this.state = {
-	      hoveredNode: null,
-	      selectedNode: props.selectedNode || props.defaultSelectedNode
-	    };
-	    return _this;
-	  }
-	
-	  _createClass(InteractiveForceGraph, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      if (Object.prototype.hasOwnProperty.call(nextProps, 'selectedNode')) {
-	        this.setState({ selectedNode: nextProps.selectedNode });
+	   _createClass(InteractiveForceGraph, null, [{
+	      key: 'propTypes',
+	      get: function get() {
+	         return Object.assign({
+	            selectedNode: selectedNodeShape,
+	            defaultSelectedNode: selectedNodeShape,
+	            highlightDependencies: _propTypes2.default.bool,
+	            opacityFactor: _propTypes2.default.number,
+	            onSelectNode: _propTypes2.default.func,
+	            onDeselectNode: _propTypes2.default.func,
+	            dataKey: _propTypes2.default.string
+	         }, _ForceGraph2.default.propTypes);
 	      }
-	    }
-	  }, {
-	    key: 'onHoverNode',
-	    value: function onHoverNode(event, hoveredNode) {
-	      if (!isTouch) {
-	        this.setState({ hoveredNode: hoveredNode });
+	   }, {
+	      key: 'defaultProps',
+	      get: function get() {
+	         return {
+	            className: '',
+	            defaultSelectedNode: null,
+	            opacityFactor: 4,
+	            onSelectNode: function onSelectNode() {},
+	            onDeselectNode: function onDeselectNode() {}
+	         };
 	      }
-	    }
-	  }, {
-	    key: 'onBlurNode',
-	    value: function onBlurNode() {
-	      this.setState({ hoveredNode: null });
-	    }
-	  }, {
-	    key: 'onClickNode',
-	    value: function onClickNode(event, selectedNode) {
-	      var _props = this.props,
-	          onDeselectNode = _props.onDeselectNode,
-	          onSelectNode = _props.onSelectNode;
+	   }]);
 	
-	      var previousNode = this.state.selectedNode;
+	   function InteractiveForceGraph(props) {
+	      _classCallCheck(this, InteractiveForceGraph);
 	
-	      // if the user clicked the same node that was already
-	      // selected, deselect it.
-	      if (previousNode && (0, _d3Force.nodeId)(previousNode) === (0, _d3Force.nodeId)(selectedNode)) {
-	        this.setState({ selectedNode: null });
-	        onDeselectNode(event, selectedNode);
-	      } else {
-	        this.setState({ selectedNode: selectedNode });
-	        onSelectNode(event, selectedNode);
+	      var _this = _possibleConstructorReturn(this, (InteractiveForceGraph.__proto__ || Object.getPrototypeOf(InteractiveForceGraph)).call(this, props));
+	
+	      _this.state = {
+	         hoveredNode: null,
+	         selectedNode: props.selectedNode || props.defaultSelectedNode
+	      };
+	      return _this;
+	   }
+	
+	   _createClass(InteractiveForceGraph, [{
+	      key: 'componentWillReceiveProps',
+	      value: function componentWillReceiveProps(nextProps) {
+	         if (Object.prototype.hasOwnProperty.call(nextProps, 'selectedNode')) {
+	            this.setState({ selectedNode: nextProps.selectedNode });
+	         }
 	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
+	   }, {
+	      key: 'onHoverNode',
+	      value: function onHoverNode(event, hoveredNode) {
+	         if (!isTouch) {
+	            this.setState({ hoveredNode: hoveredNode });
+	         }
+	      }
+	   }, {
+	      key: 'onBlurNode',
+	      value: function onBlurNode() {
+	         this.setState({ hoveredNode: null });
+	      }
+	   }, {
+	      key: 'onClickNode',
+	      value: function onClickNode(event, selectedNode) {
+	         var _props = this.props,
+	             onDeselectNode = _props.onDeselectNode,
+	             onSelectNode = _props.onSelectNode;
 	
-	      var _props2 = this.props,
-	          highlightDependencies = _props2.highlightDependencies,
-	          opacityFactor = _props2.opacityFactor,
-	          children = _props2.children,
-	          className = _props2.className,
-	          propsSelectedNode = _props2.selectedNode,
-	          spreadableProps = _objectWithoutProperties(_props2, ['highlightDependencies', 'opacityFactor', 'children', 'className', 'selectedNode']);
+	         var previousNode = this.state.selectedNode;
 	
-	      var _state = this.state,
-	          hoveredNode = _state.hoveredNode,
-	          stateSelectedNode = _state.selectedNode;
+	         // if the user clicked the same node that was already
+	         // selected, deselect it.
+	         if (previousNode && (0, _d3Force.nodeId)(previousNode) === (0, _d3Force.nodeId)(selectedNode)) {
+	            this.setState({ selectedNode: null });
+	            onDeselectNode(event, selectedNode);
+	         } else {
+	            this.setState({ selectedNode: selectedNode });
+	            onSelectNode(event, selectedNode);
+	         }
+	      }
+	   }, {
+	      key: 'render',
+	      value: function render() {
+	         var _this2 = this;
 	
-	      var _ForceGraph$getDataFr = _ForceGraph2.default.getDataFromChildren(children),
-	          links = _ForceGraph$getDataFr.links;
+	         var _props2 = this.props,
+	             highlightDependencies = _props2.highlightDependencies,
+	             opacityFactor = _props2.opacityFactor,
+	             children = _props2.children,
+	             className = _props2.className,
+	             propsSelectedNode = _props2.selectedNode,
+	             dataKey = _props2.dataKey,
+	             spreadableProps = _objectWithoutProperties(_props2, ['highlightDependencies', 'opacityFactor', 'children', 'className', 'selectedNode', 'dataKey']);
 	
-	      var selectedNode = propsSelectedNode || stateSelectedNode;
+	         var _state = this.state,
+	             hoveredNode = _state.hoveredNode,
+	             stateSelectedNode = _state.selectedNode;
 	
-	      var applyOpacity = function applyOpacity() {
-	        var opacity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-	        return opacity / opacityFactor;
-	      };
+	         var _ForceGraph$getDataFr = _ForceGraph2.default.getDataFromChildren(children),
+	             links = _ForceGraph$getDataFr.links;
 	
-	      var createEventHandler = function createEventHandler(name, node, fn) {
-	        return function (event) {
-	          _this2[name](event, node);
-	          if (fn) {
-	            fn(event);
-	          }
-	        };
-	      };
+	         var selectedNode = propsSelectedNode || stateSelectedNode;
 	
-	      var areNodesRelatives = function areNodesRelatives(node1, node2) {
-	        return node1 && node2 && links.findIndex(function (link) {
-	          return link.value > 0 && (link.source === (0, _d3Force.nodeId)(node1) && link.target === (0, _d3Force.nodeId)(node2) || link.source === (0, _d3Force.nodeId)(node2) && link.target === (0, _d3Force.nodeId)(node1));
-	        }) > -1;
-	      };
+	         var applyOpacity = function applyOpacity() {
+	            var opacity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+	            return opacity / opacityFactor;
+	         };
 	
-	      var isNodeHighlighted = function isNodeHighlighted(focusedNode, node) {
-	        return focusedNode && ((0, _d3Force.nodeId)(focusedNode) === (0, _d3Force.nodeId)(node) || selectedNode && (0, _d3Force.nodeId)(selectedNode) === (0, _d3Force.nodeId)(node) || highlightDependencies && areNodesRelatives(node, selectedNode || focusedNode));
-	      };
+	         var createEventHandler = function createEventHandler(name, node, fn) {
+	            return function (event) {
+	               _this2[name](event, node);
+	               if (fn) {
+	                  fn(event);
+	               }
+	            };
+	         };
 	
-	      var isLinkHighlighted = function isLinkHighlighted(focusedNode, link) {
-	        return focusedNode && highlightDependencies && link.value > 0 && ((0, _d3Force.nodeId)(focusedNode) === link.source || (0, _d3Force.nodeId)(focusedNode) === link.target);
-	      };
+	         var areNodesRelatives = function areNodesRelatives(node1, node2) {
+	            return node1 && node2 && links.findIndex(function (link) {
+	               return link.value > 0 && (link.source === (0, _d3Force.nodeId)(node1) && link.target === (0, _d3Force.nodeId)(node2) || link.source === (0, _d3Force.nodeId)(node2) && link.target === (0, _d3Force.nodeId)(node1));
+	            }) > -1;
+	         };
 	
-	      var fontSizeForNode = function fontSizeForNode(node) {
-	        return selectedNode && (0, _d3Force.nodeId)(node) === (0, _d3Force.nodeId)(selectedNode) ? 14 : 10;
-	      };
-	      var fontWeightForNode = function fontWeightForNode(node) {
-	        return selectedNode && (0, _d3Force.nodeId)(node) === (0, _d3Force.nodeId)(selectedNode) ? 700 : null;
-	      };
+	         var isNodeHighlighted = function isNodeHighlighted(focusedNode, node) {
+	            return focusedNode && ((0, _d3Force.nodeId)(focusedNode) === (0, _d3Force.nodeId)(node) || selectedNode && (0, _d3Force.nodeId)(selectedNode) === (0, _d3Force.nodeId)(node) || highlightDependencies && areNodesRelatives(node, selectedNode || focusedNode));
+	         };
 	
-	      var showLabelForNode = function showLabelForNode(node) {
-	        return isNodeHighlighted(selectedNode, node) || isNodeHighlighted(hoveredNode, node);
-	      };
+	         var isLinkHighlighted = function isLinkHighlighted(focusedNode, link) {
+	            return focusedNode && highlightDependencies && link.value > 0 && ((0, _d3Force.nodeId)(focusedNode) === link.source || (0, _d3Force.nodeId)(focusedNode) === link.target);
+	         };
 	
-	      var opacityForNode = function opacityForNode(node) {
-	        var origOpacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+	         var fontSizeForNode = function fontSizeForNode(node) {
+	            return selectedNode && (0, _d3Force.nodeId)(node) === (0, _d3Force.nodeId)(selectedNode) ? 14 : 10;
+	         };
+	         var fontWeightForNode = function fontWeightForNode(node) {
+	            return selectedNode && (0, _d3Force.nodeId)(node) === (0, _d3Force.nodeId)(selectedNode) ? 700 : null;
+	         };
 	
-	        if (highlightDependencies && selectedNode && !isNodeHighlighted(selectedNode, node) && !isNodeHighlighted(hoveredNode, node)) {
-	          return applyOpacity(origOpacity / 4);
-	        } else if (selectedNode && !isNodeHighlighted(selectedNode, node) && !isNodeHighlighted(hoveredNode, node) || hoveredNode && !isNodeHighlighted(hoveredNode, node)) {
-	          return applyOpacity(origOpacity);
-	        }
+	         var showLabelForNode = function showLabelForNode(node) {
+	            return isNodeHighlighted(selectedNode, node) || isNodeHighlighted(hoveredNode, node);
+	         };
 	
-	        return origOpacity;
-	      };
+	         var opacityForNode = function opacityForNode(node) {
+	            var origOpacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 	
-	      var opacityForLink = function opacityForLink(link) {
-	        var origOpacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+	            if (highlightDependencies && selectedNode && !isNodeHighlighted(selectedNode, node) && !isNodeHighlighted(hoveredNode, node)) {
+	               return applyOpacity(origOpacity / 4);
+	            } else if (selectedNode && !isNodeHighlighted(selectedNode, node) && !isNodeHighlighted(hoveredNode, node) || hoveredNode && !isNodeHighlighted(hoveredNode, node)) {
+	               return applyOpacity(origOpacity);
+	            }
 	
-	        if (highlightDependencies ? !selectedNode && hoveredNode && !isLinkHighlighted(hoveredNode, link) || selectedNode && !isLinkHighlighted(selectedNode, link) : hoveredNode || selectedNode) {
-	          return applyOpacity(origOpacity / 4);
-	        }
+	            return origOpacity;
+	         };
 	
-	        if (hoveredNode && !isLinkHighlighted(hoveredNode, link) && selectedNode && !isLinkHighlighted(selectedNode, link)) {
-	          return applyOpacity(origOpacity);
-	        }
+	         var opacityForLink = function opacityForLink(link) {
+	            var origOpacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 	
-	        return origOpacity;
-	      };
+	            if (highlightDependencies ? !selectedNode && hoveredNode && !isLinkHighlighted(hoveredNode, link) || selectedNode && !isLinkHighlighted(selectedNode, link) : hoveredNode || selectedNode) {
+	               return applyOpacity(origOpacity / 4);
+	            }
 	
-	      return _react2.default.createElement(
-	        _ForceGraph2.default,
-	        _extends({ className: 'rv-force__interactive ' + className }, spreadableProps),
-	        _react.Children.map(children, function (child) {
-	          if ((0, _ForceGraph.isNode)(child)) {
-	            var _child$props = child.props,
-	                node = _child$props.node,
-	                labelStyle = _child$props.labelStyle,
-	                _child$props$fontSize = _child$props.fontSize,
-	                fontSize = _child$props$fontSize === undefined ? fontSizeForNode(node) : _child$props$fontSize,
-	                _child$props$fontWeig = _child$props.fontWeight,
-	                fontWeight = _child$props$fontWeig === undefined ? fontWeightForNode(node) : _child$props$fontWeig,
-	                _child$props$showLabe = _child$props.showLabel,
-	                showLabel = _child$props$showLabe === undefined ? showLabelForNode(node) : _child$props$showLabe,
-	                onMouseEnter = _child$props.onMouseEnter,
-	                onMouseLeave = _child$props.onMouseLeave,
-	                onClick = _child$props.onClick;
-	            var opacity = child.props.opacity;
+	            if (hoveredNode && !isLinkHighlighted(hoveredNode, link) && selectedNode && !isLinkHighlighted(selectedNode, link)) {
+	               return applyOpacity(origOpacity);
+	            }
 	
-	            opacity = opacityForNode(node, opacity);
+	            return origOpacity;
+	         };
 	
-	            return (0, _react.cloneElement)(child, {
-	              showLabel: showLabel,
-	              opacity: opacity,
-	              labelStyle: _extends({
-	                fontSize: fontSize,
-	                fontWeight: fontWeight,
-	                opacity: opacity
-	              }, labelStyle),
-	              onMouseEnter: createEventHandler('onHoverNode', node, onMouseEnter),
-	              onMouseLeave: createEventHandler('onBlurNode', node, onMouseLeave),
-	              onClick: createEventHandler('onClickNode', node, onClick)
-	            });
-	          } else if ((0, _ForceGraph.isLink)(child)) {
-	            var link = child.props.link;
-	            var _opacity = child.props.opacity;
+	         return _react2.default.createElement(
+	            _ForceGraph2.default,
+	            _extends({ dataKey: dataKey, className: 'rv-force__interactive ' + className }, spreadableProps),
+	            _react.Children.map(children, function (child) {
+	               if ((0, _ForceGraph.isNode)(child)) {
+	                  var _child$props = child.props,
+	                      node = _child$props.node,
+	                      labelStyle = _child$props.labelStyle,
+	                      _child$props$fontSize = _child$props.fontSize,
+	                      fontSize = _child$props$fontSize === undefined ? fontSizeForNode(node) : _child$props$fontSize,
+	                      _child$props$fontWeig = _child$props.fontWeight,
+	                      fontWeight = _child$props$fontWeig === undefined ? fontWeightForNode(node) : _child$props$fontWeig,
+	                      _child$props$showLabe = _child$props.showLabel,
+	                      showLabel = _child$props$showLabe === undefined ? showLabelForNode(node) : _child$props$showLabe,
+	                      onMouseEnter = _child$props.onMouseEnter,
+	                      onMouseLeave = _child$props.onMouseLeave,
+	                      onClick = _child$props.onClick;
+	                  var opacity = child.props.opacity;
 	
-	            _opacity = opacityForLink(link, _opacity);
+	                  opacity = opacityForNode(node, opacity);
 	
-	            return (0, _react.cloneElement)(child, { opacity: _opacity });
-	          }
-	          return child;
-	        })
-	      );
-	    }
-	  }]);
+	                  return (0, _react.cloneElement)(child, {
+	                     showLabel: showLabel,
+	                     opacity: opacity,
+	                     labelStyle: _extends({
+	                        fontSize: fontSize,
+	                        fontWeight: fontWeight,
+	                        opacity: opacity
+	                     }, labelStyle),
+	                     onMouseEnter: createEventHandler('onHoverNode', node, onMouseEnter),
+	                     onMouseLeave: createEventHandler('onBlurNode', node, onMouseLeave),
+	                     onClick: createEventHandler('onClickNode', node, onClick)
+	                  });
+	               } else if ((0, _ForceGraph.isLink)(child)) {
+	                  var link = child.props.link;
+	                  var _opacity = child.props.opacity;
 	
-	  return InteractiveForceGraph;
+	                  _opacity = opacityForLink(link, _opacity);
+	
+	                  return (0, _react.cloneElement)(child, { opacity: _opacity });
+	               }
+	               return child;
+	            })
+	         );
+	      }
+	   }]);
+	
+	   return InteractiveForceGraph;
 	}(_react.PureComponent);
 	
 	exports.default = InteractiveForceGraph;
