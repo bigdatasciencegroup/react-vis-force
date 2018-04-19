@@ -164,7 +164,7 @@ export default class ForceGraph extends PureComponent {
    componentWillReceiveProps(nextProps) {
       this.lastUpdated = new Date();
       this.updateSimulation(nextProps);
-      if (nextProps.children.length !== this.props.children.length) {
+      if (nextProps.dataKey !== this.props.dataKey) {
          this.simulation.alpha(1).restart();
       }
    }
